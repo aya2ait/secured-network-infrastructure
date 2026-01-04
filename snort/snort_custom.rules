@@ -1,0 +1,39 @@
+# Règles Snort personnalisées - Infrastructure Zero Trust LSI3
+
+# === DÉTECTION SCAN RÉSEAU ===
+# T7.1 - Scan Nmap (SYN scan)
+alert tcp any any -> $HOME_NET any (flags:S; msg:"SCAN: Nmap SYN scan detected"; sid:1000001; rev:1;)
+
+# T7.1 - Scan Nmap (NULL scan)
+alert tcp any any -> $HOME_NET any (flags:0; msg:"SCAN: Nmap NULL scan detected"; sid:1000002; rev:1;)
+
+# T7.1 - Scan Nmap (XMAS scan)
+alert tcp any any -> $HOME_NET any (flags:FPU; msg:"SCAN: Nmap XMAS scan detected"; sid:1000003; rev:1;)
+
+# === DÉTECTION BRUTE-FORCE SSH ===
+# T7.2 - Tentatives SSH répétées
+alert tcp any any -> $HOME_NET 2222 (msg:"SSH: Multiple connection attempts"; threshold:type threshold, track by_src, count 5, seconds 60; sid:1000010; rev:1;)
+
+alert tcp any any -> $HOME_NET 2222 (msg:"SSH: Authentication failure pattern"; content:"Failed password"; nocase; sid:1000011; rev:1;)
+
+# === DÉTECTION ATTAQUES WEB ===
+# T7.3 - SQL Injection
+alert tcp any any -> $HOME_NET [80,443] (msg:"WEB: SQL Injection attempt"; content:"union"; nocase; content:"select"; nocase; sid:1000020; rev:1;)
+
+alert tcp any any -> $HOME_NET [80,443] (msg:"WEB: SQL Injection OR 1=1"; content:"or 1=1"; nocase; sid:1000021; rev:1;)
+
+# T7.3 - Path Traversal
+alert tcp any any -> $HOME_NET [80,443] (msg:"WEB: Directory traversal attempt"; content:"../"; sid:1000022; rev:1;)
+
+# T7.3 - XSS
+alert tcp any any -> $HOME_NET [80,443] (msg:"WEB: XSS attempt detected"; content:"<script>"; nocase; sid:1000023; rev:1;)
+
+# === DÉTECTION TRAFIC SUSPECT ===
+# T2.3 - Accès non autorisé à la zone LAN
+alert ip any any -> 192.168.10.0/24 any (msg:"POLICY: Unauthorized access to LAN"; sid:1000030; rev:1;)
+
+# T3.3 - DMZ tentant d'accéder au LAN
+alert ip 172.16.1.0/24 any -> 192.168.10.0/24 any (msg:"POLICY: DMZ to LAN access blocked"; sid:1000031; rev:1;)
+
+# Trafic vers zone Admin depuis WAN
+alert ip 203.0.113.0/24 any -> 192.168.100.0/24 any (msg:"POLICY: WAN to ADMIN blocked"; sid:1000032; rev:1;)

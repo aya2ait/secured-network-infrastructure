@@ -1,0 +1,56 @@
+# Configuration SSH Durcie - Infrastructure Zero Trust
+# Port non-standard pour réduire les scans automatisés
+Port 2222
+
+# Protocole SSH version 2 uniquement (plus sécurisé)
+Protocol 2
+
+# Adresses d'écoute
+ListenAddress 0.0.0.0
+
+# Authentification par clé publique UNIQUEMENT
+PubkeyAuthentication yes
+PasswordAuthentication no
+PermitEmptyPasswords no
+ChallengeResponseAuthentication no
+
+# Désactiver les méthodes d'authentification non sécurisées
+UsePAM no
+KerberosAuthentication no
+GSSAPIAuthentication no
+
+# Autoriser uniquement root (pour Mininet)
+PermitRootLogin prohibit-password
+AllowUsers root
+
+# Sécurité des clés
+AuthorizedKeysFile .ssh/authorized_keys
+StrictModes yes
+
+# Configuration réseau
+X11Forwarding no
+AllowTcpForwarding yes
+PermitTunnel no
+GatewayPorts no
+
+# Bannière de sécurité
+Banner /etc/ssh/banner
+
+# Timeouts et limites
+LoginGraceTime 30
+MaxAuthTries 3
+MaxSessions 2
+ClientAliveInterval 300
+ClientAliveCountMax 2
+
+# Logging détaillé
+SyslogFacility AUTH
+LogLevel VERBOSE
+
+# Algorithmes cryptographiques modernes
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
+KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
+
+# Subsystème SFTP (optionnel)
+Subsystem sftp /usr/lib/openssh/sftp-server

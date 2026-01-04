@@ -1,0 +1,10 @@
+[SECTION 2 : Pare-feu]
+  T2.2 Accès WAN -> DMZ (HTTP) : OK
+  T2.3 Isolation WAN -> LAN    : OK (Bloqué)
+[SECTION 4 : Chiffrement]
+  T4.1 Certificat SSL          : OK
+[SECTION 5 & 6 : VPN & Administration]
+  T6.3 Restriction Accès Admin : OK (Bloqué)
+[SECTION 9 : Haute Disponibilité]
+  T9.1 État VIP (172.16.1.100) : OK
+-------------------------------------------------------
